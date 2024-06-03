@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../model/varian_model.dart';
+import 'dart:core';
 
 class DessertRecommendationBruteforcePrice extends StatefulWidget {
   @override
@@ -12,21 +13,27 @@ class _DessertRecommendationState
   String? selectedFlavor1;
   String? selectedFlavor2;
   List<String> flavors = ['coklat', 'vanila', 'strawberry'];
-
   List<String> recommendedVariants = [];
   int totalHarga = 0;
+  String? runTime;
+  Stopwatch stopwatch = Stopwatch();
 
   void recommendDesserts() {
     if (selectedFlavor1 != null && selectedFlavor2 != null) {
+      stopwatch.start();
       recommendedVariants = getRekomendasiDessertBruteForce(
           desserts, selectedFlavor1!, selectedFlavor2!);
+      stopwatch.stop();
+      Duration executionTime = stopwatch.elapsed;
+      runTime =
+          '${executionTime.inSeconds}.${executionTime.inMilliseconds.toString()}.${executionTime.inMicroseconds}s';
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Bruteforce Based On Price")),
+      appBar: AppBar(title: const Text("Bruteforce Based On Price")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -70,13 +77,24 @@ class _DessertRecommendationState
                   recommendDesserts();
                 });
               },
-              child: const Text('Rekomendasikan Dessert'),
+              child: Text(selectedFlavor1 == null || selectedFlavor2 == null
+                  ? 'Disable'
+                  : 'Rekomendasikan Dessert'),
             ),
             const SizedBox(height: 20),
             const Text('Rekomendasi Paket Dessert:'),
             ...recommendedVariants
                 .map((recommendation) => Text(recommendation))
                 .toList(),
+            const SizedBox(height: 120),
+            Center(
+              child: Text(
+                selectedFlavor1 == null || selectedFlavor2 == null
+                    ? "Pilih Rasa Terlebih Dahulu"
+                    : "Running Time : ${runTime ?? '0'}",
+                style: const TextStyle(fontSize: 20),
+              ),
+            )
           ],
         ),
       ),

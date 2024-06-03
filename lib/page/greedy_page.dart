@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kue_ku/model/varian_model.dart';
+import 'dart:core';
 
 class DessertRecommendationGreedy extends StatefulWidget {
   @override
@@ -9,21 +10,28 @@ class DessertRecommendationGreedy extends StatefulWidget {
 class _DessertRecommendationState extends State<DessertRecommendationGreedy> {
   String? selectedFlavor1;
   String? selectedFlavor2;
+  String? runTime;
   List<String> flavors = ['coklat', 'vanila', 'strawberry'];
-
   List<String> recommendations = [];
+  Stopwatch stopwatch = Stopwatch();
+  bool disabledButton = true;
 
   void recommendDesserts() {
+    stopwatch.start();
     if (selectedFlavor1 != null && selectedFlavor2 != null) {
       recommendations =
           getRekomendasiDessert(desserts, selectedFlavor1!, selectedFlavor2!);
     }
+    stopwatch.stop();
+    Duration executionTime = stopwatch.elapsed;
+    runTime =
+        '${executionTime.inSeconds}.${executionTime.inMilliseconds.toString()}.${executionTime.inMicroseconds}s';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Greedy Based On Rating")),
+      appBar: AppBar(title: const Text("Greedy Based On Rating")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -67,13 +75,24 @@ class _DessertRecommendationState extends State<DessertRecommendationGreedy> {
                   recommendDesserts();
                 });
               },
-              child: const Text('Rekomendasikan Dessert'),
+              child: Text(selectedFlavor1 == null || selectedFlavor2 == null
+                  ? 'Disable'
+                  : 'Rekomendasikan Dessert'),
             ),
             const SizedBox(height: 20),
             const Text('Rekomendasi Paket Dessert:'),
             ...recommendations
                 .map((recommendation) => Text(recommendation))
                 .toList(),
+            const SizedBox(height: 120),
+            Center(
+              child: Text(
+                selectedFlavor1 == null || selectedFlavor2 == null
+                    ? "Pilih Rasa Terlebih Dahulu"
+                    : "Running Time : ${runTime ?? '0'}",
+                style: const TextStyle(fontSize: 20),
+              ),
+            )
           ],
         ),
       ),
