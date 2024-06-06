@@ -116,6 +116,6 @@ class _DessertRecommendationState
     VarianModel varian1 = dessert.variants.firstWhere((v) => v.rasa == rasa1);
     VarianModel varian2 = dessert.variants.firstWhere((v) => v.rasa == rasa2);
 
-    return varian1.harga >= varian2.harga ? varian1 : varian2;
+    return varian1.harga < varian2.harga ? varian1 : varian2;
   }
 }

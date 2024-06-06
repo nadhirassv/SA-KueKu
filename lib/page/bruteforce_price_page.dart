@@ -119,6 +119,6 @@ class _DessertRecommendationState
         .where((v) => v.rasa == rasa1 || v.rasa == rasa2)
         .toList();
     variants.sort((a, b) => b.harga.compareTo(a.harga));
-    return variants.first;
+    return variants.last;
   }
 }
